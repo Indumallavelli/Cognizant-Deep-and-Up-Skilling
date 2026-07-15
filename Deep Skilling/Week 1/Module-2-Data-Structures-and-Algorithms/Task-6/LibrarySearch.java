@@ -1,0 +1,43 @@
+import java.util.Arrays;
+import java.util.Comparator;
+
+public class LibrarySearch {
+
+    // Linear Search
+    public static Book linearSearch(Book[] books, String title) {
+
+        for (Book book : books) {
+            if (book.title.equalsIgnoreCase(title)) {
+                return book;
+            }
+        }
+
+        return null;
+    }
+
+    // Binary Search
+    public static Book binarySearch(Book[] books, String title) {
+
+        Arrays.sort(books, Comparator.comparing(b -> b.title));
+
+        int left = 0;
+        int right = books.length - 1;
+
+        while (left <= right) {
+
+            int mid = (left + right) / 2;
+
+            int compare = books[mid].title.compareToIgnoreCase(title);
+
+            if (compare == 0)
+                return books[mid];
+
+            if (compare < 0)
+                left = mid + 1;
+            else
+                right = mid - 1;
+        }
+
+        return null;
+    }
+}

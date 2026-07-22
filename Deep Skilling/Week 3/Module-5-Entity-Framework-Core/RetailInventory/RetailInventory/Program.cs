@@ -1,16 +1,15 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using EFCore.BulkExtensions;
 using RetailInventory.Data;
 
 using var context = new AppDbContext();
 
-// AsNoTracking
-var products = await context.Products
-    .AsNoTracking()
-    .ToListAsync();
+var productList = context.Products.ToList();
 
-Console.WriteLine("Products (AsNoTracking):");
-
-foreach (var product in products)
+foreach (var product in productList)
 {
-    Console.WriteLine($"{product.Name} - ₹{product.Price}");
+    product.StockQuantity += 10;
 }
+
+await context.BulkUpdateAsync(productList);
+
+Console.WriteLine("Bulk update completed successfully.");

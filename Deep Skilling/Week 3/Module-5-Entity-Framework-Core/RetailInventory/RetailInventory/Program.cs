@@ -1,18 +1,16 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RetailInventory.Data;
-using RetailInventory.Models;
 
 using var context = new AppDbContext();
 
-var productDTOs = await context.Products
-    .Select(p => new ProductDTO
-    {
-        Name = p.Name,
-        CategoryName = p.Category.Name
-    })
+// AsNoTracking
+var products = await context.Products
+    .AsNoTracking()
     .ToListAsync();
 
-foreach (var product in productDTOs)
+Console.WriteLine("Products (AsNoTracking):");
+
+foreach (var product in products)
 {
-    Console.WriteLine($"{product.Name} - {product.CategoryName}");
+    Console.WriteLine($"{product.Name} - ₹{product.Price}");
 }

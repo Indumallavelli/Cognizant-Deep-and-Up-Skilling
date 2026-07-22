@@ -3,34 +3,34 @@ using RetailInventory.Models;
 
 using var context = new AppDbContext();
 
-// Add a category
-var category = new Category
+var electronics = new Category
 {
     Name = "Electronics"
 };
 
-context.Categories.Add(category);
-context.SaveChanges();
-
-// Add a product
-var product = new Product
+var groceries = new Category
 {
-    Name = "Laptop",
-    Price = 65000,
-    CategoryId = category.Id
+    Name = "Groceries"
 };
 
-context.Products.Add(product);
-context.SaveChanges();
+await context.Categories.AddRangeAsync(electronics, groceries);
 
-Console.WriteLine("Data inserted successfully!");
-
-// Display all products
-var products = context.Products.ToList();
-
-Console.WriteLine("\nProducts:");
-
-foreach (var p in products)
+var product1 = new Product
 {
-    Console.WriteLine($"{p.Id}  {p.Name}  ₹{p.Price}");
-}
+    Name = "Laptop",
+    Price = 75000,
+    Category = electronics
+};
+
+var product2 = new Product
+{
+    Name = "Rice Bag",
+    Price = 1200,
+    Category = groceries
+};
+
+await context.Products.AddRangeAsync(product1, product2);
+
+await context.SaveChangesAsync();
+
+Console.WriteLine("Data inserted successfully.");

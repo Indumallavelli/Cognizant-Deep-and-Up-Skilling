@@ -3,24 +3,31 @@ using RetailInventory.Data;
 
 using var context = new AppDbContext();
 
-// Update Laptop price
-var laptop = await context.Products
-    .FirstOrDefaultAsync(p => p.Name == "Laptop");
+// Filter and Sort
+var filtered = await context.Products
+    .Where(p => p.Price > 1000)
+    .OrderByDescending(p => p.Price)
+    .ToListAsync();
 
-if (laptop != null)
+Console.WriteLine("Filtered Products:");
+foreach (var product in filtered)
 {
-    laptop.Price = 70000;
+    Console.WriteLine($"{product.Name} - ₹{product.Price}");
 }
 
-// Delete Rice Bag
-var riceBag = await context.Products
-    .FirstOrDefaultAsync(p => p.Name == "Rice Bag");
+Console.WriteLine();
 
-if (riceBag != null)
+// Project into DTO (Anonymous Object)
+var productDTOs = await context.Products
+    .Select(p => new
+    {
+        p.Name,
+        p.Price
+    })
+    .ToListAsync();
+
+Console.WriteLine("Projected Products:");
+foreach (var item in productDTOs)
 {
-    context.Products.Remove(riceBag);
+    Console.WriteLine($"{item.Name} - ₹{item.Price}");
 }
-
-await context.SaveChangesAsync();
-
-Console.WriteLine("Update and Delete completed successfully.");

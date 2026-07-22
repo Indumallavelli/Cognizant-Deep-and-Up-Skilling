@@ -3,17 +3,24 @@ using RetailInventory.Data;
 
 using var context = new AppDbContext();
 
-var products = await context.Products
-    .Include(p => p.Category)
-    .ToListAsync();
+// Update Laptop price
+var laptop = await context.Products
+    .FirstOrDefaultAsync(p => p.Name == "Laptop");
 
-Console.WriteLine("Products List:");
-Console.WriteLine();
-
-foreach (var product in products)
+if (laptop != null)
 {
-    Console.WriteLine($"Product: {product.Name}");
-    Console.WriteLine($"Price: ₹{product.Price}");
-    Console.WriteLine($"Category: {product.Category?.Name}");
-    Console.WriteLine("-------------------------");
+    laptop.Price = 70000;
 }
+
+// Delete Rice Bag
+var riceBag = await context.Products
+    .FirstOrDefaultAsync(p => p.Name == "Rice Bag");
+
+if (riceBag != null)
+{
+    context.Products.Remove(riceBag);
+}
+
+await context.SaveChangesAsync();
+
+Console.WriteLine("Update and Delete completed successfully.");

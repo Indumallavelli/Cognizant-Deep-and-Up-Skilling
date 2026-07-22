@@ -3,31 +3,26 @@ using RetailInventory.Data;
 
 using var context = new AppDbContext();
 
-// Filter and Sort
-var filtered = await context.Products
-    .Where(p => p.Price > 1000)
-    .OrderByDescending(p => p.Price)
+// Eager Loading
+var products = await context.Products
+    .Include(p => p.Category)
     .ToListAsync();
 
-Console.WriteLine("Filtered Products:");
-foreach (var product in filtered)
+Console.WriteLine("Eager Loading:");
+
+foreach (var product in products)
 {
-    Console.WriteLine($"{product.Name} - ₹{product.Price}");
+    Console.WriteLine($"{product.Name} - {product.Category?.Name}");
 }
 
 Console.WriteLine();
 
-// Project into DTO (Anonymous Object)
-var productDTOs = await context.Products
-    .Select(p => new
-    {
-        p.Name,
-        p.Price
-    })
-    .ToListAsync();
+// Explicit Loading
+var firstProduct = await context.Products.FirstAsync();
 
-Console.WriteLine("Projected Products:");
-foreach (var item in productDTOs)
-{
-    Console.WriteLine($"{item.Name} - ₹{item.Price}");
-}
+await context.Entry(firstProduct)
+    .Reference(p => p.Category)
+    .LoadAsync();
+
+Console.WriteLine("Explicit Loading:");
+Console.WriteLine($"{firstProduct.Name} - {firstProduct.Category?.Name}");

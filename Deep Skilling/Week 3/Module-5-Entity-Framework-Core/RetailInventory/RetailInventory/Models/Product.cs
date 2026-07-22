@@ -1,4 +1,6 @@
-﻿namespace RetailInventory.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace RetailInventory.Models
 {
     public class Product
     {
@@ -17,5 +19,8 @@
         public ProductDetail ProductDetail { get; set; }
 
         public List<Tag> Tags { get; set; } = new();
+
+        [Timestamp]
+        public byte[] RowVersion { get; set; }
     }
 }

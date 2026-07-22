@@ -1,15 +1,13 @@
-﻿using EFCore.BulkExtensions;
+﻿using Microsoft.EntityFrameworkCore;
 using RetailInventory.Data;
 
 using var context = new AppDbContext();
 
-var productList = context.Products.ToList();
-
-foreach (var product in productList)
+try
 {
-    product.StockQuantity += 10;
+    await context.SaveChangesAsync();
 }
-
-await context.BulkUpdateAsync(productList);
-
-Console.WriteLine("Bulk update completed successfully.");
+catch (DbUpdateConcurrencyException)
+{
+    Console.WriteLine("Concurrency conflict detected.");
+}

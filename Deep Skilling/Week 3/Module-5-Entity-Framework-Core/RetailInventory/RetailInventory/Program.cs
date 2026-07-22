@@ -1,28 +1,18 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using RetailInventory.Data;
+using RetailInventory.Models;
 
 using var context = new AppDbContext();
 
-// Eager Loading
-var products = await context.Products
-    .Include(p => p.Category)
+var productDTOs = await context.Products
+    .Select(p => new ProductDTO
+    {
+        Name = p.Name,
+        CategoryName = p.Category.Name
+    })
     .ToListAsync();
 
-Console.WriteLine("Eager Loading:");
-
-foreach (var product in products)
+foreach (var product in productDTOs)
 {
-    Console.WriteLine($"{product.Name} - {product.Category?.Name}");
+    Console.WriteLine($"{product.Name} - {product.CategoryName}");
 }
-
-Console.WriteLine();
-
-// Explicit Loading
-var firstProduct = await context.Products.FirstAsync();
-
-await context.Entry(firstProduct)
-    .Reference(p => p.Category)
-    .LoadAsync();
-
-Console.WriteLine("Explicit Loading:");
-Console.WriteLine($"{firstProduct.Name} - {firstProduct.Category?.Name}");

@@ -1,36 +1,19 @@
-﻿using RetailInventory.Data;
-using RetailInventory.Models;
+﻿using Microsoft.EntityFrameworkCore;
+using RetailInventory.Data;
 
 using var context = new AppDbContext();
 
-var electronics = new Category
+var products = await context.Products
+    .Include(p => p.Category)
+    .ToListAsync();
+
+Console.WriteLine("Products List:");
+Console.WriteLine();
+
+foreach (var product in products)
 {
-    Name = "Electronics"
-};
-
-var groceries = new Category
-{
-    Name = "Groceries"
-};
-
-await context.Categories.AddRangeAsync(electronics, groceries);
-
-var product1 = new Product
-{
-    Name = "Laptop",
-    Price = 75000,
-    Category = electronics
-};
-
-var product2 = new Product
-{
-    Name = "Rice Bag",
-    Price = 1200,
-    Category = groceries
-};
-
-await context.Products.AddRangeAsync(product1, product2);
-
-await context.SaveChangesAsync();
-
-Console.WriteLine("Data inserted successfully.");
+    Console.WriteLine($"Product: {product.Name}");
+    Console.WriteLine($"Price: ₹{product.Price}");
+    Console.WriteLine($"Category: {product.Category?.Name}");
+    Console.WriteLine("-------------------------");
+}

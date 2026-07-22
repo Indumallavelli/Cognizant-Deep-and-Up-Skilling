@@ -9,10 +9,14 @@ namespace RetailInventory.Data
 
         public DbSet<Category> Categories { get; set; }
 
+        public DbSet<ProductDetail> ProductDetails { get; set; }
+
+        public DbSet<Tag> Tags { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseSqlServer(
-                @"Server=localhost\SQLEXPRESS;Database=RetailInventoryDB;Trusted_Connection=True;TrustServerCertificate=True");
+                "Server=localhost\\SQLEXPRESS;Database=RetailInventoryDB;Trusted_Connection=True;TrustServerCertificate=True");
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -40,6 +44,11 @@ namespace RetailInventory.Data
                     StockQuantity = 100
                 }
             );
+
+            modelBuilder.Entity<Product>()
+                .HasOne(p => p.ProductDetail)
+                .WithOne(pd => pd.Product)
+                .HasForeignKey<ProductDetail>(pd => pd.ProductId);
         }
     }
 }

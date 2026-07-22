@@ -13,5 +13,9 @@
         public int CategoryId { get; set; }
 
         public Category Category { get; set; } = null!;
+
+        public ProductDetail ProductDetail { get; set; }
+
+        public List<Tag> Tags { get; set; } = new();
     }
 }

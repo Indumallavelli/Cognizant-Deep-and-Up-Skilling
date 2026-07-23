@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using EmployeeWebApi.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace EmployeeWebApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [Authorize]
     public class EmployeeController : ControllerBase
     {
         private static List<Employee> employees = GetStandardEmployeeList();

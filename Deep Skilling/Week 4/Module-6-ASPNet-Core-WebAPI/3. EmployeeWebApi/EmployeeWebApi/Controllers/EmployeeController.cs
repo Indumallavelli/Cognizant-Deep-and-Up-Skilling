@@ -24,12 +24,19 @@ namespace EmployeeWebApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult Put([FromBody] Employee employee)
+        public ActionResult<Employee> Put([FromBody] Employee employee)
         {
+            if (employee.Id <= 0)
+            {
+                return BadRequest("Invalid employee id");
+            }
+
             var emp = employees.FirstOrDefault(e => e.Id == employee.Id);
 
             if (emp == null)
-                return NotFound();
+            {
+                return BadRequest("Invalid employee id");
+            }
 
             emp.Name = employee.Name;
             emp.Salary = employee.Salary;
